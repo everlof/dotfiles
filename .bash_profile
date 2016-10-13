@@ -185,3 +185,41 @@ tpfix () {
   sed -i '' "s/$(echo -en '\\\u0402')/$(echo -en '\xc3\x84')/g" $1
   sed -i '' "s/$(echo -en '\\\u2026')/$(echo -en '\xc3\x96')/g" $1
 }
+
+heelp() {
+  echo "Print the booted device's copyboard"
+  echo "- xcrun simctl pbpaste booted"
+}
+
+rawurlencode() {
+  local string="${1}"
+  local strlen=${#string}
+  local encoded=""
+  local pos c o
+
+  for (( pos=0 ; pos<strlen ; pos++ )); do
+     c=${string:$pos:1}
+     case "$c" in
+        [-_.~a-zA-Z0-9] ) o="${c}" ;;
+        * )               printf -v o '%%%02x' "'$c"
+     esac
+     encoded+="${o}"
+  done
+  echo "${encoded}"    # You can either set a return variable (FASTER)
+  REPLY="${encoded}"   #+or echo the result (EASIER)... or both... :p
+}
+
+urlparse() {
+  eval $(url.py "$1" "$2")
+}
+
+escapeurl() {
+  urlparse "$1"
+  ENCODED_PATH=$(rawurlencode_tp "$_PATH")
+  echo "${_SCHEME}://${_NETLOC}${ENCODED_PATH}"
+}
+
+if [ -f ~/.bash_profile_local ] ; then
+  echo "Sourcing ~/.bash_profile_local"
+  . ~/.bash_profile_local
+fi
