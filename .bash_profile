@@ -4,6 +4,10 @@ if [ -f `brew --prefix`/etc/bash_completion.d/git-completion.bash ]; then
     . `brew --prefix`/etc/bash_completion.d/git-completion.bash
 fi
 
+lastweek () {
+	git lg --author=David --before=$(date --date="1 days ago" "+%Y-%m-%d") --after=$(date --date="8 days ago" "+%Y-%m-%d")
+}
+
 alias python=python3.5
 alias pip=python3.5
 
